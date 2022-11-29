@@ -25,8 +25,7 @@ public class AWTCounter extends Frame {
       btnCount = new Button("Count");   // construct the Button component
       add(btnCount);                    // "super" Frame container adds Button component
 
-      BtnCountListener listener = new BtnCountListener();
-      btnCount.addActionListener(listener);
+      btnCount.addActionListener(evt -> tfCount.setText(++count + ""));
          // "btnCount" is the source object that fires an ActionEvent when clicked.
          // The source object adds an instance of BtnCountListener as an ActionEvent listener,
          //   which provides an ActionEvent handler called actionPerformed().
@@ -54,14 +53,4 @@ public class AWTCounter extends Frame {
          // or simply "new AWTCounter();" for an anonymous instance
    }
 
-   // Define an inner class to handle the "Count" button-click
-   private class BtnCountListener implements ActionListener {
-      // ActionEvent handler - Called back upon button-click.
-      @Override
-      public void actionPerformed(ActionEvent evt) {
-         ++count; // Increase the counter value
-         // Display the counter value on the TextField tfCount
-         tfCount.setText(count + ""); // Convert int to String
-      }
-   }
 }
