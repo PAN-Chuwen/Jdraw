@@ -1,4 +1,4 @@
-package jdraw;
+package jdraw.awtExamples;
 
 import java.awt.*;
 import java.awt.event.*;
