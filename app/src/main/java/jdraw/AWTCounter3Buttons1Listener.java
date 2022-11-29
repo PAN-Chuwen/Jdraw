@@ -48,12 +48,13 @@ public class AWTCounter3Buttons1Listener extends Frame {
    private class AllButtonsListener implements ActionListener {
       @Override
       public void actionPerformed(ActionEvent evt) {
-         // Need to determine which button fired the event.
-         // the getActionCommand() returns the Button's label
-         String btnLabel = evt.getActionCommand();
-         if (btnLabel.equals("Count Up")) {
+         // Need to determine which button has fired the event.
+         Button source = (Button)evt.getSource();
+               // Get a reference of the source that has fired the event.
+               // getSource() returns a java.lang.Object. Downcast back to Button.
+         if (source == btnCountUp) {
             ++count;
-         } else if (btnLabel.equals("Count Down")) {
+         } else if (source == btnCountDown) {
             --count;
          } else {
             count = 0;
