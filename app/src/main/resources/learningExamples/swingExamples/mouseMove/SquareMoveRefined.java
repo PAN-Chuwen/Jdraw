@@ -1,4 +1,4 @@
-package jdraw.swingExamples.mouseMove;
+package learningExamples.swingExamples.mouseMove;
 
 import javax.swing.SwingUtilities;
 import javax.swing.JFrame;

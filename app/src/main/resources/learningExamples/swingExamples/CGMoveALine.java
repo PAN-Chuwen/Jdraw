@@ -1,4 +1,4 @@
-package jdraw.swingExamples;
+package learningExamples.swingExamples;
 
 import java.awt.*; // Using AWT's Graphics and Color
 import java.awt.event.*; // Using AWT's event classes and listener interface

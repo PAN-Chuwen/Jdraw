@@ -1,4 +1,4 @@
-package jdraw.awtExamples;
+package learningExamples.awtExamples;
 
 import java.awt.*;  // Using Frame class in package java.awt
 

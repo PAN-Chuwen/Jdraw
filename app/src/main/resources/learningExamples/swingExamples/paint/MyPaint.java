@@ -1,4 +1,4 @@
-package jdraw.swingExamples.paint;
+package learningExamples.swingExamples.paint;
 
 import java.util.List;
 import java.util.ArrayList;
