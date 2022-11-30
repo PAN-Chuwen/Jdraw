@@ -1,6 +1,5 @@
 package learningExamples.awtExamples;
 import java.awt.*;        // Using AWT container and component classes
-import java.awt.event.*;  // Using AWT event classes and listener interfaces
 
 // An AWT program inherits from the top-level container java.awt.Frame
 public class AWTCounter extends Frame {

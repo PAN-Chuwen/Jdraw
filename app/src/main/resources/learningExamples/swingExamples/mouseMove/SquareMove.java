@@ -9,10 +9,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+
 import java.awt.event.MouseAdapter;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseMotionAdapter;
+
 
 public class SquareMove {
     
@@ -61,7 +60,7 @@ class MyPanel extends JPanel {
     }
     
     private void moveSquare(int x, int y) {
-        int OFFSET = 1;
+
         if ((squareX!=x) || (squareY!=y)) {
             // repaint(squareX,squareY,squareW+OFFSET,squareH+OFFSET);
             squareX=x;
