@@ -14,37 +14,72 @@ abstract class Shape {
 
 }
 
-class Rectangle extends Shape {
-    private Point startPoint;
-    private Point endPoint;
-    private int width;
-    private int height;
+abstract class Geometric extends Shape {
+    protected Point topLeftPoint;
+    protected Point startPoint;
+    protected Point endPoint;
+    protected int width;
+    protected int height;
 
-    // create Rectangle whose size = 0
-    public Rectangle(int x, int y) {
+    public Geometric(int x, int y) {
         startPoint = new Point(x, y);
         endPoint = new Point(x, y);
-    }
-
-    private void drawRectUsingDiagnol(Graphics g) {
-        Point upperLeftPoint = new Point(Math.min(startPoint.x, endPoint.x), Math.min(startPoint.y, endPoint.y));
-        width = Math.abs(startPoint.x - endPoint.x);
-        height = Math.abs(startPoint.y - endPoint.y);
-        g.drawRect(upperLeftPoint.x, upperLeftPoint.y, width, height);
+        // support Geometric drawing in all directions, not only from top-left to
+        // bottom-right.
+        topLeftPoint = new Point(x, y);
+        
     }
 
     @Override
     void setPoint(int x, int y) {
         endPoint.x = x;
         endPoint.y = y;
+        width = Math.abs(startPoint.x - endPoint.x);
+        height = Math.abs(startPoint.y - endPoint.y);
+        topLeftPoint.x = Math.min(startPoint.x, endPoint.x);
+        topLeftPoint.y = Math.min(startPoint.y, endPoint.y);
+    }
+
+}
+
+class Rectangle extends Geometric {
+
+    public Rectangle(int x, int y) {
+        super(x, y);
     }
 
     @Override
     void draw(Graphics g) {
         g.setColor(Color.BLACK);
-        drawRectUsingDiagnol(g);
+        g.drawRect(topLeftPoint.x, topLeftPoint.y, width, height);
+    }
+}
+
+class Oval extends Geometric {
+    
+    public Oval(int x, int y) {
+        super(x, y);
     }
 
+    @Override
+    void draw(Graphics g) {
+        g.setColor(Color.BLACK);
+        g.drawOval(topLeftPoint.x, topLeftPoint.y, width, height);
+    }
+}
+
+class Line extends Geometric {
+    
+    public Line(int x, int y) {
+        super(x, y);
+    }
+
+    @Override
+    void draw(Graphics g) {
+        g.setColor(Color.BLACK);
+        g.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
+    }
+    
 }
 
 /*
@@ -71,30 +106,6 @@ class Pencil extends Shape {
     @Override
     void setPoint(int x, int y) {
         pointList.add(new Point(x, y));
-    }
-}
-
-class Oval extends Shape {
-    @Override
-    void draw(Graphics g) {
-
-    }
-
-    @Override
-    void setPoint(int x, int y) {
-
-    }
-}
-
-class Line extends Shape {
-    @Override
-    void draw(Graphics g) {
-
-    }
-
-    @Override
-    void setPoint(int x, int y) {
-
     }
 }
 

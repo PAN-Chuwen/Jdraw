@@ -34,11 +34,13 @@ public class DrawCanvas extends JPanel {
                 Shape curShape;
                 if (curShapeType.equals("Rectangle")) {
                     curShape = new Rectangle(x, y);
-                }
-                else if (curShapeType.equals("Pencil")) {
+                } else if (curShapeType.equals("Oval")) {
+                    curShape = new Oval(x, y);
+                } else if (curShapeType.equals("Line")) {
+                    curShape = new Line(x, y);
+                } else if (curShapeType.equals("Pencil")) {
                     curShape = new Pencil();
-                }
-                else {
+                } else {
                     curShape = new Rectangle(x, y);
                 }
                 shapeStack.push(curShape);
