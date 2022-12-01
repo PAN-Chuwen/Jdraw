@@ -68,7 +68,10 @@ public class DrawCanvas extends JPanel {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
         for (Shape shape : shapeStack) {
+            g2d.setColor(shape.getColor());
+            g2d.setStroke(new BasicStroke(6.0F));
             shape.draw(g);
         }
     }
