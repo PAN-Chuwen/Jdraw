@@ -9,8 +9,8 @@ public class DrawCanvas extends JPanel {
 
     private int CANVAS_WIDTH = 800;
     private int CANVAS_HEIGHT = 600;
-    private int mouse_X;
-    private int mouse_Y;
+    private int x;
+    private int y;
 
     private Stack<Shape> shapeStack = new Stack<>();
 
@@ -28,13 +28,20 @@ public class DrawCanvas extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent evt) {
-                mouse_X = evt.getX();
-                mouse_Y = evt.getY();
+                x = evt.getX();
+                y = evt.getY();
                 String curShapeType = SideBar.getShapeType();
+                Shape curShape;
                 if (curShapeType.equals("Rectangle")) {
-                    Rectangle curRectangle = new Rectangle(mouse_X, mouse_Y, 0, 0);
-                    shapeStack.push(curRectangle);
+                    curShape = new Rectangle(x, y, 0, 0);
                 }
+                else if (curShapeType.equals("Pencil")) {
+                    curShape = new Pencil();
+                }
+                else {
+                    curShape = new Rectangle(x, y, 0, 0);
+                }
+                shapeStack.push(curShape);
             }
         });
         /*
@@ -43,13 +50,10 @@ public class DrawCanvas extends JPanel {
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent evt) {
-                mouse_X = evt.getX();
-                mouse_Y = evt.getY();
+                x = evt.getX();
+                y = evt.getY();
                 Shape curShape = shapeStack.peek();
-                String curShapeType = curShape.getClass().getSimpleName();
-                if (curShapeType.equals("Rectangle")) {
-                    curShape.setPoint(mouse_X, mouse_Y);
-                }
+                curShape.setPoint(x, y);
                 repaint();
             }
         });
