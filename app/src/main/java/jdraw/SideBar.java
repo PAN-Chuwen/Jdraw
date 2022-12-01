@@ -51,13 +51,12 @@ public class SideBar extends JPanel {
         ShapeSelectButtonList.add(ovalButton);
         ShapeSelectButtonList.add(lineButton);
         ShapeSelectButtonList.add(pencilButton);
-        ShapeSelectButtonList.add(colorChooserButton);
 
-        ShapeSelectListener allBtnListener = new ShapeSelectListener();
+        ShapeSelectListener shapeSelectBtnListener = new ShapeSelectListener();
         for (JButton btn : ShapeSelectButtonList) {
             add(btn);
             add(Box.createRigidArea(new Dimension(0, 5))); // add 5 pixel interval
-            btn.addActionListener(allBtnListener);
+            btn.addActionListener(shapeSelectBtnListener);
         }
 
         // add listener/dialog pop for colorChooserButton
@@ -67,7 +66,7 @@ public class SideBar extends JPanel {
             @Override
             public void actionPerformed(ActionEvent evt) {
                 Color newColor = JColorChooser.showDialog(
-                        null,
+                        SideBar.this,
                         "Choose Shape Color",
                         shapeColor);
                 if (newColor != null) {
