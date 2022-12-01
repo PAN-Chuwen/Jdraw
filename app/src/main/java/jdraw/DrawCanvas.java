@@ -33,6 +33,7 @@ public class DrawCanvas extends JPanel {
                 y = evt.getY();
                 String curShapeType = SideBar.getNextShapeType();
                 Color curShapeColor = SideBar.getNextShapeColor();
+                Stroke curShapeStroke = SideBar.getNextShapeStroke();
                 Shape curShape;
                 if (curShapeType.equals("Rectangle")) {
                     curShape = new Rectangle(x, y);
@@ -46,6 +47,7 @@ public class DrawCanvas extends JPanel {
                     curShape = new Rectangle(x, y);
                 }
                 curShape.setColor(curShapeColor);
+                curShape.setStroke(curShapeStroke);
                 shapeStack.push(curShape);
             }
         });
@@ -71,7 +73,7 @@ public class DrawCanvas extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         for (Shape shape : shapeStack) {
             g2d.setColor(shape.getColor());
-            g2d.setStroke(new BasicStroke(6.0F));
+            g2d.setStroke(shape.getStroke());
             shape.draw(g);
         }
     }

@@ -1,14 +1,16 @@
 package jdraw;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.*;
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
 // Model, interface for all shapes(e.g. Line, Rectangle, Oval...)
 abstract class Shape {
     private final Color DEFAULT_COLOR = Color.BLACK;
+    private final Stroke DEFAULT_STROKE = new BasicStroke(3);
     private Color color = DEFAULT_COLOR;
+    private Stroke stroke = DEFAULT_STROKE;
 
     abstract void setPoint(int x, int y);
 
@@ -18,8 +20,16 @@ abstract class Shape {
         this.color = color;
     }
 
+    void setStroke(Stroke stroke) {
+        this.stroke = stroke;
+    }
+
     Color getColor() {
         return color;
+    }
+
+    Stroke getStroke() {
+        return stroke;
     }
 }
 
