@@ -16,7 +16,7 @@ public class DrawCanvas extends JPanel {
 
     public DrawCanvas() {
         setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
-        setBackground(Color.GREEN);
+        setBackground(Color.GRAY);
 
         // Controller
 
