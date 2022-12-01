@@ -6,7 +6,7 @@ import java.awt.*;
 
 
 public class SideBar extends JPanel{
-    private static String shapeType = "Pencil";
+    private static String shapeType = "Rectangle";
     private int CANVAS_WIDTH = 200;
     private int CANVAS_HEIGHT = 600;
     public SideBar() {

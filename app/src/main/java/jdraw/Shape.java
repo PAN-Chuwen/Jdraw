@@ -5,10 +5,8 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.List;
 
-// Model, interface for all shapes(e.g. line, rectangle, oval...)
+// Model, interface for all shapes(e.g. Line, Rectangle, Oval...)
 abstract class Shape {
-
-
 
     abstract void setPoint(int x, int y);
 
@@ -17,46 +15,47 @@ abstract class Shape {
 }
 
 class Rectangle extends Shape {
-    private int x;
-    private int y;
+    private Point startPoint;
+    private Point endPoint;
     private int width;
     private int height;
 
-    public Rectangle(int x, int y, int width, int height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+    // create Rectangle whose size = 0
+    public Rectangle(int x, int y) {
+        startPoint = new Point(x, y);
+        endPoint = new Point(x, y);
+    }
+
+    private void drawRectUsingDiagnol(Graphics g) {
+        Point upperLeftPoint = new Point(Math.min(startPoint.x, endPoint.x), Math.min(startPoint.y, endPoint.y));
+        width = Math.abs(startPoint.x - endPoint.x);
+        height = Math.abs(startPoint.y - endPoint.y);
+        g.drawRect(upperLeftPoint.x, upperLeftPoint.y, width, height);
     }
 
     @Override
     void setPoint(int x, int y) {
-        setWidth(x - this.x);
-        setHeight(y - this.y);
+        endPoint.x = x;
+        endPoint.y = y;
     }
 
     @Override
     void draw(Graphics g) {
         g.setColor(Color.BLACK);
-        g.drawRect(x, y, width, height);
+        drawRectUsingDiagnol(g);
     }
 
-    private void setWidth(int width) {
-        this.width = width;
-    }
-
-    private void setHeight(int height) {
-        this.height = height;
-    }
 }
 
-/* an object of class Pencil consists of many points, we need to call g.drawLine() for every point
+/*
+ * an object of class Pencil consists of many points, we need to call
+ * g.drawLine() for every point
  * upon mousePressed(), create new Pencil()
- * upon mouseDragged(), add point to pointList (implemented in setPoint() method)
-*/
+ * upon mouseDragged(), add point to pointList (implemented in setPoint()
+ * method
+ */
 class Pencil extends Shape {
     List<Point> pointList;
-
 
     public Pencil() {
         pointList = new ArrayList<>();
@@ -102,6 +101,7 @@ class Line extends Shape {
 class Point {
     int x;
     int y;
+
     public Point(int x, int y) {
         this.x = x;
         this.y = y;

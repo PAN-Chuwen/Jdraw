@@ -33,13 +33,13 @@ public class DrawCanvas extends JPanel {
                 String curShapeType = SideBar.getShapeType();
                 Shape curShape;
                 if (curShapeType.equals("Rectangle")) {
-                    curShape = new Rectangle(x, y, 0, 0);
+                    curShape = new Rectangle(x, y);
                 }
                 else if (curShapeType.equals("Pencil")) {
                     curShape = new Pencil();
                 }
                 else {
-                    curShape = new Rectangle(x, y, 0, 0);
+                    curShape = new Rectangle(x, y);
                 }
                 shapeStack.push(curShape);
             }
