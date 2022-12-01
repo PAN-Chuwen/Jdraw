@@ -13,10 +13,11 @@ public class DrawCanvas extends JPanel {
     private int y;
 
     private Stack<Shape> shapeStack = new Stack<>();
+    private static final Color CANVAS_COLOR = Color.GRAY;
 
     public DrawCanvas() {
         setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
-        setBackground(Color.GRAY);
+        setBackground(CANVAS_COLOR);
 
         // Controller
 
@@ -30,7 +31,8 @@ public class DrawCanvas extends JPanel {
             public void mousePressed(MouseEvent evt) {
                 x = evt.getX();
                 y = evt.getY();
-                String curShapeType = SideBar.getShapeType();
+                String curShapeType = SideBar.getNextShapeType();
+                Color curShapeColor = SideBar.getNextShapeColor();
                 Shape curShape;
                 if (curShapeType.equals("Rectangle")) {
                     curShape = new Rectangle(x, y);
@@ -43,6 +45,7 @@ public class DrawCanvas extends JPanel {
                 } else {
                     curShape = new Rectangle(x, y);
                 }
+                curShape.setColor(curShapeColor);
                 shapeStack.push(curShape);
             }
         });

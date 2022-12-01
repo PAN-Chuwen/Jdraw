@@ -7,11 +7,16 @@ import java.util.List;
 
 // Model, interface for all shapes(e.g. Line, Rectangle, Oval...)
 abstract class Shape {
+    private final Color DEFAULT_COLOR = Color.BLACK;
+    Color color = DEFAULT_COLOR;
 
     abstract void setPoint(int x, int y);
 
     abstract void draw(Graphics g);
 
+    void setColor(Color color) {
+        this.color = color;
+    }
 }
 
 abstract class Geometric extends Shape {
@@ -50,7 +55,7 @@ class Rectangle extends Geometric {
 
     @Override
     void draw(Graphics g) {
-        g.setColor(Color.BLACK);
+        g.setColor(color);
         g.drawRect(topLeftPoint.x, topLeftPoint.y, width, height);
     }
 }
@@ -63,7 +68,7 @@ class Oval extends Geometric {
 
     @Override
     void draw(Graphics g) {
-        g.setColor(Color.BLACK);
+        g.setColor(color);
         g.drawOval(topLeftPoint.x, topLeftPoint.y, width, height);
     }
 }
@@ -76,7 +81,7 @@ class Line extends Geometric {
 
     @Override
     void draw(Graphics g) {
-        g.setColor(Color.BLACK);
+        g.setColor(color);
         g.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
     }
     
@@ -98,6 +103,7 @@ class Pencil extends Shape {
 
     @Override
     void draw(Graphics g) {
+        g.setColor(color);
         for (Point point : pointList) {
             g.drawLine(point.x, point.y, point.x, point.y);
         }
