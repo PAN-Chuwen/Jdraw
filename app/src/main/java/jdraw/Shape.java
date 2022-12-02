@@ -121,7 +121,13 @@ class Line extends Geometric {
         g.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
     }
 
-    // roughly calculated 
+    @Override
+    void updataPosition(int xDelta, int yDelta) {
+        startPoint.x += xDelta;
+        startPoint.y += yDelta;
+        endPoint.x += xDelta;
+        endPoint.y += yDelta;
+    }
 
 }
 
