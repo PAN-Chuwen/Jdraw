@@ -1,6 +1,8 @@
 package jdraw;
 
 import javax.swing.*;
+import javax.swing.event.*;
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -45,10 +47,21 @@ public class TextPanel extends JPanel {
 
         // add listener for swing components in TextPanel
         // listener for textField
-        textField.addActionListener(new ActionListener() {
+        textField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            public void actionPerformed(ActionEvent evt) {
-
+            public void changedUpdate(DocumentEvent evt) {
+                updateText();
+            }
+            @Override
+            public void removeUpdate(DocumentEvent evt) {
+                updateText();
+            }
+            @Override
+            public void insertUpdate(DocumentEvent evt) {
+                updateText();
+            }
+            public void updateText() {
+                textInput = textField.getText();
             }
         });
 
@@ -69,13 +82,7 @@ public class TextPanel extends JPanel {
             }
         });
 
-        // listener for textButton
-        textButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                textInput = textField.getText(); // update textInput
-            }
-        });
+        // listener for textButton is added in DrawCanvas.java
 
     }
 

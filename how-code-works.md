@@ -95,6 +95,20 @@ class Font只能获取它的属性, 而不能单独设置其中的一个属性(�
 
 ##### [How to propogate Swing events from a inner component to a container?](https://stackoverflow.com/questions/2191060/how-to-propogate-swing-events-from-a-inner-component-to-a-container)
 
+有2种思路, 一种思路是在TextPanel (inner component) 中自己fire一个event, 第二种思路是在drawCanvas (顶层) 中获取TextPanel.getTextButton(), 并为其设置listener. 我们采用的是第二种思路
+
+
+
+
+
+#### 改变 textField 时画出来的Text就不同, 不用再点击Text按钮
+
+##### [Value Change Listener to JTextField](https://stackoverflow.com/questions/3953208/value-change-listener-to-jtextfield)
+
+
+
+
+
 
 
 #### 理解listener
