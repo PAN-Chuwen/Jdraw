@@ -11,7 +11,7 @@ public class TextPanel extends JPanel {
     private static final int FONTSIZE_MAX = 30;
     private static final int FONTSIZE_DEFAULT = 15;
 
-    private final int TEXT_FIELD_COL = 20;
+    private final int TEXT_FIELD_COL = 10;
 
     // Ref: https://docs.oracle.com/javase/7/docs/api/java/awt/Font.html#style
     private static String textInput;
@@ -24,7 +24,7 @@ public class TextPanel extends JPanel {
     private Integer[] fontSizeList = new Integer[FONTSIZE_MAX];
 
     public TextPanel() {
-        setLayout(new FlowLayout());
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         // init static member variable, note that we can't init top because the class
         // hasn't been created yet
@@ -44,10 +44,12 @@ public class TextPanel extends JPanel {
         textFontNameList = new JComboBox<>(fontNameList); // add fonts to font combobox(list)
         textFontNameList.setRenderer(new FontCellRenderer()); // set rederer for text fonts
 
+
         add(textFontSizeList);
         add(textFontNameList);
         add(textField);
         add(textButton);
+        setPreferredSize(getPreferredSize());
 
         // add listener for swing components in TextPanel
         // listener for textField

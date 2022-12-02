@@ -13,9 +13,9 @@ import java.util.ArrayList;
 public class SideBar extends JPanel {
     private static String shapeType;
     private Boolean isSelect = false;
-    private static final Color SIDEBAR_BACKGROUND_COLOR = Color.CYAN;
-    private static final int CANVAS_WIDTH = 200;
-    private static final int CANVAS_HEIGHT = 600;
+    private static final Color SIDEBAR_BACKGROUND_COLOR = Color.LIGHT_GRAY;
+    private static final int SIDEBAR_WIDTH = 400;
+    private static final int SIDEBAR_HEIGHT = 800;
 
     // shape Buttons
     private JButton rectangleButton = new JButton("Rectangle");
@@ -52,7 +52,7 @@ public class SideBar extends JPanel {
 
 
     public SideBar() {
-        setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
+        setPreferredSize(new Dimension(SIDEBAR_WIDTH, SIDEBAR_HEIGHT));
         setBackground(SIDEBAR_BACKGROUND_COLOR);
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
@@ -62,32 +62,17 @@ public class SideBar extends JPanel {
         ShapeSelectButtonList.add(pencilButton);
 
         // add buttons for shapes
-        ShapeSelectListener shapeSelectBtnListener = new ShapeSelectListener();
         for (JButton btn : ShapeSelectButtonList) {
             add(btn);
             add(Box.createRigidArea(new Dimension(0, 5))); // add 5 pixel interval
-            btn.addActionListener(shapeSelectBtnListener);
         }
         // add textPanel
         add(textPanel);
-        JButton TextButton = textPanel.getTextButton();
-        TextButton.addActionListener(shapeSelectBtnListener);
 
-        // add listener/dialog pop for colorChooserButton
+        // add dialog window for colorChooserButton
         add(colorChooserButton);
         add(Box.createRigidArea(new Dimension(0, 5))); // add 5 pixel interval
-        colorChooserButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                Color newColor = JColorChooser.showDialog(
-                        SideBar.this,
-                        "Choose Shape Color",
-                        shapeColor);
-                if (newColor != null) {
-                    shapeColor = newColor;
-                }
-            }
-        });
+        
 
         // add listener for strokeSlider
         JLabel sliderLabel = new JLabel("Stroke Slider", JLabel.CENTER);
@@ -101,27 +86,14 @@ public class SideBar extends JPanel {
 
         add(strokeSlider);
         add(Box.createRigidArea(new Dimension(0, 5))); // add 5 pixel interval
-        strokeSlider.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent evt) {
-                JSlider source = (JSlider) evt.getSource();
-                if (!source.getValueIsAdjusting()) {
-                    int stroke = source.getValue();
-                    shapeStroke = new BasicStroke((float) stroke);
-                }
-            }
-        });
+        
 
         add(undoButton); // listener in DrawCanvas.java
         add(redoButton); // listener in DrawCanvas.java
 
         add(selectButton);
-        selectButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                isSelect = true;
-            }
-        });
+        
+        addListeners();
 
     }
 
@@ -141,11 +113,54 @@ public class SideBar extends JPanel {
         return shapeStroke;
     }
 
+    // will move to DrawCanvas.java
+    private void addListeners() {
+        ShapeSelectListener shapeSelectBtnListener = new ShapeSelectListener();
+        for (JButton btn : ShapeSelectButtonList) {
+            btn.addActionListener(shapeSelectBtnListener);
+        }
+
+        JButton TextButton = textPanel.getTextButton();
+        TextButton.addActionListener(shapeSelectBtnListener);
+
+        colorChooserButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                Color newColor = JColorChooser.showDialog(
+                        SideBar.this,
+                        "Choose Shape Color",
+                        shapeColor);
+                if (newColor != null) {
+                    shapeColor = newColor;
+                }
+            }
+        });
+
+        strokeSlider.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent evt) {
+                JSlider source = (JSlider) evt.getSource();
+                if (!source.getValueIsAdjusting()) {
+                    int stroke = source.getValue();
+                    shapeStroke = new BasicStroke((float) stroke);
+                }
+            }
+        });
+
+        selectButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                isSelect = true;
+            }
+        });
+    }
+
+    
+
     /*
      * Controller, listen to event when mouse-click happens
      * this class is not anonymous since we need to reuse it (add listner to multiple buttons)
      */
-
 
     private class ShapeSelectListener implements ActionListener {
         @Override

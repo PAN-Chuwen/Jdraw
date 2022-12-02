@@ -7,8 +7,8 @@ import java.util.Stack;
 
 public class DrawCanvas extends JPanel {
 
-    private int CANVAS_WIDTH = 800;
-    private int CANVAS_HEIGHT = 600;
+    private static final int CANVAS_WIDTH = 800;
+    private static final int CANVAS_HEIGHT = 800;
     private int x;
     private int y;
     private int savedMousePositionX; // used for moving shapes when selected

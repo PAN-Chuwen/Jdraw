@@ -1,8 +1,6 @@
 package jdraw;
 
 import java.awt.*;
-import javax.swing.*;
-import javax.swing.text.AttributeSet.FontAttribute;
 
 import java.util.ArrayList;
 import java.util.List;

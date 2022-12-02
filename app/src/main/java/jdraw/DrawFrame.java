@@ -18,7 +18,7 @@ public class DrawFrame extends JFrame {
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("JDraw");
-        pack(); // pack all the components in the JFrame
+        pack(); // adjust Frame size
         setVisible(true); // show it
         requestFocus(); // "super" JFrame requests focus to receive KeyEvent
     }

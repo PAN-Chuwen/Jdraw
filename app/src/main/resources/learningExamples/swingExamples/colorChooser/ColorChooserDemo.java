@@ -33,10 +33,10 @@ package learningExamples.swingExamples.colorChooser;
 
 
 import java.awt.*;
-import java.awt.event.*;
+
 import javax.swing.*;
 import javax.swing.event.*;
-import javax.swing.colorchooser.*;
+
 
 /* ColorChooserDemo.java requires no other files. */
 public class ColorChooserDemo extends JPanel
