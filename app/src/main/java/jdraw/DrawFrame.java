@@ -14,7 +14,7 @@ public class DrawFrame extends JFrame {
         cp.setLayout(new BorderLayout());
         cp.add(canvas, BorderLayout.CENTER);
         cp.add(sideBar, BorderLayout.WEST);
-        canvas.addListenerForRedoUndoBtn(); // this need to be called after add
+        canvas.addListeners(); // this need to be called after add
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("JDraw");

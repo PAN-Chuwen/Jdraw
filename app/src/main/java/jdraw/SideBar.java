@@ -3,6 +3,7 @@ package jdraw;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.StyledEditorKit.BoldAction;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 
 public class SideBar extends JPanel {
     private static String shapeType;
+    private static Boolean isSelect = false;
     private static final Color SIDEBAR_BACKGROUND_COLOR = Color.CYAN;
     private static final int CANVAS_WIDTH = 200;
     private static final int CANVAS_HEIGHT = 600;
@@ -21,8 +23,6 @@ public class SideBar extends JPanel {
     private JButton ovalButton = new JButton("Oval");
     private JButton lineButton = new JButton("Line");
     private JButton pencilButton = new JButton("Pencil");
-
-    private JButton selectButton = new JButton("Select");
     
     public JButton saveButton = new JButton("Save");
     public JButton loadButton = new JButton("Load");
@@ -47,6 +47,10 @@ public class SideBar extends JPanel {
     // undo + redo 
     public JButton undoButton = new JButton("Undo");
     public JButton redoButton = new JButton("Redo");
+
+    // select Button
+    public JButton selectButton = new JButton("Select");
+
 
     public SideBar() {
         setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
@@ -109,9 +113,21 @@ public class SideBar extends JPanel {
             }
         });
 
-        add(undoButton);
-        add(redoButton);
+        add(undoButton); // listener in DrawCanvas.java
+        add(redoButton); // listener in DrawCanvas.java
 
+        add(selectButton);
+        selectButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                isSelect = true;
+            }
+        });
+
+    }
+
+    static Boolean getIsSelect() {
+        return isSelect;
     }
 
     static String getNextShapeType() {
@@ -128,7 +144,7 @@ public class SideBar extends JPanel {
 
     /*
      * Controller, listen to event when mouse-click happens
-     * 
+     * this class is not anonymous since we need to reuse it (add listner to multiple buttons)
      */
 
 
@@ -136,6 +152,7 @@ public class SideBar extends JPanel {
         @Override
         public void actionPerformed(ActionEvent evt) {
             shapeType = evt.getActionCommand();
+            isSelect = false;
         }
     }
 

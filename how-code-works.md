@@ -52,9 +52,10 @@
 - [x] 图形线条粗细/橡皮擦大小
 - [ ] 打开图片
 - [ ] 保存图片
-- [ ] 撤销 undo / redo
+- [x] 撤销 undo / redo
+- [ ] 填充(包括创建图形时的默认填充选项, JCheckBox)
 - [ ] 放大/缩小
-- [ ] 重新选择画出来的对象(一开始默认的行为)
+- [ ] 重新选择画出来的对象(如果有重叠那么以最近画出来的图像优先)
 
 
 
@@ -124,7 +125,17 @@ Find.java
 
 ##### [How to pass a type as a method parameter in Java](https://stackoverflow.com/questions/2240646/how-to-pass-a-type-as-a-method-parameter-in-java)
 
-#### 理解listener
+
+
+选择状态(点击了选择按钮后), 在canvas中拖动鼠标能移动图形(如果有多个图形重叠选最新画的)
+
+color stroke 能改变上一个选择图形(如果有的话) 的属性
+
+
+
+
+
+
 
 
 

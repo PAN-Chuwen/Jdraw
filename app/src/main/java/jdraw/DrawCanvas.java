@@ -21,7 +21,45 @@ public class DrawCanvas extends JPanel {
         setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
         setBackground(CANVAS_COLOR);
 
-        // Controller
+
+    }
+
+    // Controller
+
+    public void addListeners() {
+        DrawFrame drawFrame = (DrawFrame) SwingUtilities.getWindowAncestor(this);
+        JButton redoButton = drawFrame.sideBar.redoButton;
+        JButton undoButton = drawFrame.sideBar.undoButton;
+        
+        /*
+         * Add listener for redo/undo button in SideBar
+         * note that we can not add this piece of code to constructor,
+         * since SwingUtilities.getWindowAncestor will return null before drawCanvas was
+         * added to drawFrame
+         * (in DrawFrame.java, note that the constructor will be called before
+         * add(drawCanvas))
+         */
+        undoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                if (!shapeStack.isEmpty()) {
+                    Shape poppedShape = shapeStack.pop();
+                    trashBin.push(poppedShape);
+                    repaint();
+                }
+            }
+        });
+
+        redoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                if (!trashBin.isEmpty()) {
+                    Shape restoredShape = trashBin.pop();
+                    shapeStack.push(restoredShape);
+                    repaint();
+                }
+            }
+        });
 
         /*
          * mousePressed -> create new Shape() according to SideBar.ShapeType
@@ -59,10 +97,13 @@ public class DrawCanvas extends JPanel {
                 shapeStack.push(curShape);
             }
         });
+
         /*
-         * mouseDragged -> modify data of current Shape in ShapeStack
+         * mouseDragged:
+         * -> modify data of current Shape in ShapeStack
+         * -> OR move selected Shape if SelectButton was pressed
          */
-        addMouseMotionListener(new MouseMotionAdapter() {
+        this.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged(MouseEvent evt) {
                 x = evt.getX();
@@ -70,39 +111,6 @@ public class DrawCanvas extends JPanel {
                 Shape curShape = shapeStack.peek();
                 curShape.setPoint(x, y);
                 repaint();
-            }
-        });
-    }
-
-    /*
-     * Add listener for redo/undo button in SideBar
-     * note that we can not add this piece of code to constructor,
-     * since SwingUtilities.getWindowAncestor will return null before drawCanvas was added to drawFrame
-     * (in DrawFrame.java, note that the constructor will be called before add(drawCanvas))
-     */
-    public void addListenerForRedoUndoBtn() {
-        DrawFrame drawFrame = (DrawFrame) SwingUtilities.getWindowAncestor(this);
-        JButton redoButton = drawFrame.sideBar.redoButton;
-        JButton undoButton = drawFrame.sideBar.undoButton;
-        undoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                if (!shapeStack.isEmpty()) {
-                    Shape poppedShape = shapeStack.pop();
-                    trashBin.push(poppedShape);
-                    repaint();
-                }
-            }
-        });
-
-        redoButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                if (!trashBin.isEmpty()) {
-                    Shape restoredShape = trashBin.pop();
-                    shapeStack.push(restoredShape);
-                    repaint();
-                }
             }
         });
     }
