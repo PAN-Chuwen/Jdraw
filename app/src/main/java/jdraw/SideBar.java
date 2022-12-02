@@ -23,10 +23,9 @@ public class SideBar extends JPanel {
     private JButton pencilButton = new JButton("Pencil");
 
     private JButton selectButton = new JButton("Select");
-    private JButton undoButton = new JButton("Undo");
-    private JButton redoButton = new JButton("Redo");
-    private JButton saveButton = new JButton("Save");
-    private JButton loadButton = new JButton("Load");
+    
+    public JButton saveButton = new JButton("Save");
+    public JButton loadButton = new JButton("Load");
     List<JButton> ShapeSelectButtonList = new ArrayList<>();
 
     // textPanel
@@ -44,6 +43,10 @@ public class SideBar extends JPanel {
     private static Stroke shapeStroke = new BasicStroke((float) STROKE_INIT);
 
     private JSlider strokeSlider = new JSlider(JSlider.VERTICAL, STROKE_MIN, STROKE_MAX, STROKE_INIT);
+
+    // undo + redo 
+    public JButton undoButton = new JButton("Undo");
+    public JButton redoButton = new JButton("Redo");
 
     public SideBar() {
         setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
@@ -105,6 +108,9 @@ public class SideBar extends JPanel {
                 }
             }
         });
+
+        add(undoButton);
+        add(redoButton);
 
     }
 

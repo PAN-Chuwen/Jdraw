@@ -4,8 +4,8 @@ import java.awt.*;
 import javax.swing.*;
 
 public class DrawFrame extends JFrame {
-    private DrawCanvas canvas;
-    private SideBar sideBar;
+    public DrawCanvas canvas;
+    public SideBar sideBar;
 
     public DrawFrame() {
         canvas = new DrawCanvas();
@@ -14,7 +14,7 @@ public class DrawFrame extends JFrame {
         cp.setLayout(new BorderLayout());
         cp.add(canvas, BorderLayout.CENTER);
         cp.add(sideBar, BorderLayout.WEST);
-
+        canvas.addListenerForRedoUndoBtn(); // this need to be called after add
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("JDraw");

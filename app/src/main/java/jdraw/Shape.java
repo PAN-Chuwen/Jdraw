@@ -7,7 +7,7 @@ import javax.swing.text.AttributeSet.FontAttribute;
 import java.util.ArrayList;
 import java.util.List;
 
-// Model, interface for all shapes(e.g. Line, Rectangle, Oval...)
+// Model, abstract class for all shapes(e.g. Line, Rectangle, Oval...)
 abstract class Shape {
     private final Color DEFAULT_COLOR = Color.BLACK;
     private final Stroke DEFAULT_STROKE = new BasicStroke(3);

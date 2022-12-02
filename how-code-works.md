@@ -47,6 +47,7 @@
 - [x] 画出各种图形
 - [x] 添加 `Sidebar`(先用Text描述即可, 后续替换成Icon)
 - [x] 调整颜色(包括取色框), 仅改变下一个画出来的图形颜色, 如果要改已经画出来的图形颜色会比较复杂
+- [x] 画出文字
 - [ ] 橡皮擦
 - [x] 图形线条粗细/橡皮擦大小
 - [ ] 打开图片
@@ -95,7 +96,13 @@ class Font只能获取它的属性, 而不能单独设置其中的一个属性(�
 
 ##### [How to propogate Swing events from a inner component to a container?](https://stackoverflow.com/questions/2191060/how-to-propogate-swing-events-from-a-inner-component-to-a-container)
 
-有2种思路, 一种思路是在TextPanel (inner component) 中自己fire一个event, 第二种思路是在drawCanvas (顶层) 中获取TextPanel.getTextButton(), 并为其设置listener. 我们采用的是第二种思路
+有3种思路,
+
+思路1: 在TextPanel (inner component) 中自己fire一个event 
+
+思路2 :在drawCanvas (顶层) 中获取TextPanel.getTextButton(), 并为其设置listener. 
+
+思路3: 在含有Component那层中递归向上找对应的Container
 
 
 
@@ -107,9 +114,15 @@ class Font只能获取它的属性, 而不能单独设置其中的一个属性(�
 
 
 
+#### 需要在哪里改数据, 就在哪个文件添加Listener, 不管添加listener的component在哪个文件中
 
+Find.java
 
+##### [How to get the top level container of a JComponent?](https://stackoverflow.com/questions/2660943/how-to-get-the-top-level-container-of-a-jcomponent)
 
+##### [Test if object is instanceof a parameter type](https://stackoverflow.com/questions/5734720/test-if-object-is-instanceof-a-parameter-type)
+
+##### [How to pass a type as a method parameter in Java](https://stackoverflow.com/questions/2240646/how-to-pass-a-type-as-a-method-parameter-in-java)
 
 #### 理解listener
 

@@ -12,7 +12,9 @@ public class DrawCanvas extends JPanel {
     private int x;
     private int y;
 
-    private Stack<Shape> shapeStack = new Stack<>();
+    private Stack<Shape> shapeStack = new Stack<>(); // store shapes already drawn on canvas
+    private Stack<Shape> trashBin = new Stack<>(); // store undo shapes. When redo, pop from trashBin and push to
+                                                   // shapeStack
     private static final Color CANVAS_COLOR = Color.GRAY;
 
     public DrawCanvas() {
@@ -68,6 +70,39 @@ public class DrawCanvas extends JPanel {
                 Shape curShape = shapeStack.peek();
                 curShape.setPoint(x, y);
                 repaint();
+            }
+        });
+    }
+
+    /*
+     * Add listener for redo/undo button in SideBar
+     * note that we can not add this piece of code to constructor,
+     * since SwingUtilities.getWindowAncestor will return null before drawCanvas was added to drawFrame
+     * (in DrawFrame.java, note that the constructor will be called before add(drawCanvas))
+     */
+    public void addListenerForRedoUndoBtn() {
+        DrawFrame drawFrame = (DrawFrame) SwingUtilities.getWindowAncestor(this);
+        JButton redoButton = drawFrame.sideBar.redoButton;
+        JButton undoButton = drawFrame.sideBar.undoButton;
+        undoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                if (!shapeStack.isEmpty()) {
+                    Shape poppedShape = shapeStack.pop();
+                    trashBin.push(poppedShape);
+                    repaint();
+                }
+            }
+        });
+
+        redoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                if (!trashBin.isEmpty()) {
+                    Shape restoredShape = trashBin.pop();
+                    shapeStack.push(restoredShape);
+                    repaint();
+                }
             }
         });
     }
