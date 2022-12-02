@@ -11,17 +11,18 @@ public class DrawCanvas extends JPanel {
     private int CANVAS_HEIGHT = 600;
     private int x;
     private int y;
+    private int savedMousePositionX; // used for moving shapes when selected
+    private int savedMousePositionY; // used for moving shapes when selected
 
     private Stack<Shape> shapeStack = new Stack<>(); // store shapes already drawn on canvas
     private Stack<Shape> trashBin = new Stack<>(); // store undo shapes. When redo, pop from trashBin and push to
                                                    // shapeStack
+    private Shape curShape;
     private static final Color CANVAS_COLOR = Color.GRAY;
 
     public DrawCanvas() {
         setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
         setBackground(CANVAS_COLOR);
-
-
     }
 
     // Controller
@@ -30,7 +31,7 @@ public class DrawCanvas extends JPanel {
         DrawFrame drawFrame = (DrawFrame) SwingUtilities.getWindowAncestor(this);
         JButton redoButton = drawFrame.sideBar.redoButton;
         JButton undoButton = drawFrame.sideBar.undoButton;
-        
+
         /*
          * Add listener for redo/undo button in SideBar
          * note that we can not add this piece of code to constructor,
@@ -74,27 +75,38 @@ public class DrawCanvas extends JPanel {
                 String curShapeType = SideBar.getNextShapeType();
                 Color curShapeColor = SideBar.getNextShapeColor();
                 Stroke curShapeStroke = SideBar.getNextShapeStroke();
-                Shape curShape;
-                if (curShapeType.equals("Rectangle")) {
-                    curShape = new Rectangle(x, y);
-                } else if (curShapeType.equals("Oval")) {
-                    curShape = new Oval(x, y);
-                } else if (curShapeType.equals("Line")) {
-                    curShape = new Line(x, y);
-                } else if (curShapeType.equals("Pencil")) {
-                    curShape = new Pencil();
-                } else if (curShapeType.equals("Text")) {
-                    String inputText = TextPanel.getTextInput();
-                    curShape = new Text(inputText);
-                    // do Text-specific jobs
-                    Text curText = (Text) curShape;
-                    curText.setFont(TextPanel.getFontInfo());
+                Boolean isSelected = drawFrame.sideBar.getIsSelect();
+                if (!isSelected) {
+                    if (curShapeType.equals("Rectangle")) {
+                        curShape = new Rectangle(x, y);
+                    } else if (curShapeType.equals("Oval")) {
+                        curShape = new Oval(x, y);
+                    } else if (curShapeType.equals("Line")) {
+                        curShape = new Line(x, y);
+                    } else if (curShapeType.equals("Pencil")) {
+                        curShape = new Pencil();
+                    } else if (curShapeType.equals("Text")) {
+                        String inputText = TextPanel.getTextInput();
+                        curShape = new Text(x, y, inputText);
+                        // do Text-specific jobs
+                        Text curText = (Text) curShape;
+                        curText.setFont(TextPanel.getFontInfo());
+                    } else {
+                        curShape = new Rectangle(x, y);
+                    }
+                    curShape.setColor(curShapeColor);
+                    curShape.setStroke(curShapeStroke);
+                    shapeStack.push(curShape);
                 } else {
-                    curShape = new Rectangle(x, y);
+                    // choose selected shape if there're multiple shapes stacked
+                    for (Shape shape : shapeStack) {
+                        if (shape.containPoint(x, y)) {
+                            curShape = shape;
+                        }
+                    }
+                    // and save current mouse position
+                    saveMousePosition();
                 }
-                curShape.setColor(curShapeColor);
-                curShape.setStroke(curShapeStroke);
-                shapeStack.push(curShape);
             }
         });
 
@@ -108,8 +120,16 @@ public class DrawCanvas extends JPanel {
             public void mouseDragged(MouseEvent evt) {
                 x = evt.getX();
                 y = evt.getY();
-                Shape curShape = shapeStack.peek();
-                curShape.setPoint(x, y);
+                Boolean isSelected = drawFrame.sideBar.getIsSelect();
+                if (isSelected && curShape != null) { // curShape might be null
+                    int xDelta = x - savedMousePositionX;
+                    int yDelta = y - savedMousePositionY;
+                    saveMousePosition();
+                    curShape.updataPosition(xDelta, yDelta);
+                } else {
+                    curShape = shapeStack.peek();
+                    curShape.setPoint(x, y);
+                }
                 repaint();
             }
         });
@@ -125,5 +145,10 @@ public class DrawCanvas extends JPanel {
             g2d.setStroke(shape.getStroke());
             shape.draw(g);
         }
+    }
+
+    void saveMousePosition() {
+        savedMousePositionX = x;
+        savedMousePositionY = y;
     }
 }

@@ -3,7 +3,6 @@ package jdraw;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.text.StyledEditorKit.BoldAction;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -13,7 +12,7 @@ import java.util.ArrayList;
 
 public class SideBar extends JPanel {
     private static String shapeType;
-    private static Boolean isSelect = false;
+    private Boolean isSelect = false;
     private static final Color SIDEBAR_BACKGROUND_COLOR = Color.CYAN;
     private static final int CANVAS_WIDTH = 200;
     private static final int CANVAS_HEIGHT = 600;
@@ -126,7 +125,7 @@ public class SideBar extends JPanel {
 
     }
 
-    static Boolean getIsSelect() {
+    Boolean getIsSelect() {
         return isSelect;
     }
 

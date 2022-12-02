@@ -9,12 +9,16 @@ import java.util.List;
 
 // Model, abstract class for all shapes(e.g. Line, Rectangle, Oval...)
 abstract class Shape {
-    private final Color DEFAULT_COLOR = Color.BLACK;
-    private final Stroke DEFAULT_STROKE = new BasicStroke(3);
-    private Color color = DEFAULT_COLOR;
-    private Stroke stroke = DEFAULT_STROKE;
+    // color and stroke are set everytime mousePressed() is called (after
+    // constructor)
+    protected Color color;
+    protected Stroke stroke;
 
     abstract void setPoint(int x, int y);
+
+    abstract boolean containPoint(int x, int y);
+
+    abstract void updataPosition(int x, int y);
 
     abstract void draw(Graphics g);
 
@@ -33,6 +37,9 @@ abstract class Shape {
     Stroke getStroke() {
         return stroke;
     }
+
+    // drag shape
+    
 }
 
 abstract class Geometric extends Shape {
@@ -61,6 +68,22 @@ abstract class Geometric extends Shape {
         topLeftPoint.y = Math.min(startPoint.y, endPoint.y);
     }
 
+    @Override
+    boolean containPoint(int x, int y) {
+        boolean containsPoint = false;
+        // if in Rectangle(applied to Oval as well)
+        if (x >= topLeftPoint.x && x <= topLeftPoint.x + width)
+            if (y >= topLeftPoint.y && y <= topLeftPoint.y + height)
+                containsPoint = true;
+        return containsPoint;
+    }
+    
+    @Override
+    void updataPosition(int xDelta, int yDelta) {
+        // update topLeftPoint
+        topLeftPoint.x += xDelta;
+        topLeftPoint.y += yDelta;
+    }
 }
 
 class Rectangle extends Geometric {
@@ -98,6 +121,8 @@ class Line extends Geometric {
         g.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
     }
 
+    // roughly calculated 
+
 }
 
 /*
@@ -125,14 +150,42 @@ class Pencil extends Shape {
     void setPoint(int x, int y) {
         pointList.add(new Point(x, y));
     }
+
+    @Override
+    boolean containPoint(int x, int y) {
+        boolean containsPoint = false;
+        BasicStroke basicStroke = (BasicStroke) stroke;
+        // check every dot(point) in pointList
+        for (Point point : pointList) {
+            int radius = (int) basicStroke.getLineWidth();
+            if (x >= point.x - radius && x <= point.x + radius)
+                if (y >= point.y - radius && y <= point.y + radius) {
+                    containsPoint = true;
+                    break;
+                }           
+        }
+        return containsPoint;
+    }
+
+    @Override
+    void updataPosition(int xDelta, int yDelta) {
+        // update topLeftPoint FOR EVERY DOT
+        for (Point point : pointList) {
+            point.x += xDelta;
+            point.y += yDelta;
+        }
+       
+    }
 }
 
-class Text extends Shape {
+// Text shape is like rectangle
+class Text extends Geometric {
     private String textContent;
     private Font font;
     private Point textStartPoint = new Point(0, 0);
 
-    public Text(String s) {
+    public Text(int x, int y, String s) {
+        super(x, y);
         textContent = s;
     }
 
