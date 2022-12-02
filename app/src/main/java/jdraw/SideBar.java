@@ -17,17 +17,23 @@ public class SideBar extends JPanel {
     private static final Color SIDEBAR_BACKGROUND_COLOR = Color.CYAN;
     private static final int CANVAS_WIDTH = 200;
     private static final int CANVAS_HEIGHT = 600;
+
+    // shape Buttons
     private JButton rectangleButton = new JButton("Rectangle");
     private JButton ovalButton = new JButton("Oval");
     private JButton lineButton = new JButton("Line");
     private JButton pencilButton = new JButton("Pencil");
-    private JButton textButton = new JButton("Text");
+
     private JButton select = new JButton("Select");
     private JButton undoButton = new JButton("Undo");
     private JButton redoButton = new JButton("Redo");
     private JButton saveButton = new JButton("Save");
     private JButton loadButton = new JButton("Load");
     List<JButton> ShapeSelectButtonList = new ArrayList<>();
+
+    // textPanel
+    private JPanel textPanel = new TextPanel();
+    
 
     // colorChooser Button
     private static final Color SHAPE_DEFAULT_COLOR = Color.BLACK;
@@ -52,12 +58,15 @@ public class SideBar extends JPanel {
         ShapeSelectButtonList.add(lineButton);
         ShapeSelectButtonList.add(pencilButton);
 
+        // add buttons for shapes
         ShapeSelectListener shapeSelectBtnListener = new ShapeSelectListener();
         for (JButton btn : ShapeSelectButtonList) {
             add(btn);
             add(Box.createRigidArea(new Dimension(0, 5))); // add 5 pixel interval
             btn.addActionListener(shapeSelectBtnListener);
         }
+        // add textPanel
+        add(textPanel);
 
         // add listener/dialog pop for colorChooserButton
         add(colorChooserButton);
