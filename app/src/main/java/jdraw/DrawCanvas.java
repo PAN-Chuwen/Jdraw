@@ -43,6 +43,8 @@ public class DrawCanvas extends JPanel {
                     curShape = new Line(x, y);
                 } else if (curShapeType.equals("Pencil")) {
                     curShape = new Pencil();
+                } else if (curShapeType.equals("Text")) {
+                    curShape = new Text();
                 } else {
                     curShape = new Rectangle(x, y);
                 }
