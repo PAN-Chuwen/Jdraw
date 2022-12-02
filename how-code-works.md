@@ -57,15 +57,47 @@
 
 
 
+#### drawString
+
+怎么改变string(text)内容?
+
+字体大小?
+
+apply cancel
+
+
+
+
+
+
+
 SideBar.java 和 drawCanvas.java 中包括了Controller(主要通过listener实现)的代码
 
 #### SideBar中改变颜色/粗细怎么传递到Canvas中?
 
 
 
-#### 为什么用colorChooser重选颜色后shape会变成Rectangle?
+#### SideBar -> TextPanel 怎么将Text相关属性传递到Canvas中?
 
-在负责改变形状的buttonList中不小心加入了colorChooserButton.
+要么在drawFrame.java中进行操作(因为drawCanvas.java 是看不见drawFrame.java的, 也不能对其中的成员变量进行操作)
+
+要么在TextPanel.java中把需要传出去的成员设置成static, 这样就可以在drawFrame中直接调用了
+
+
+
+#### 为什么要在TextPanel.java中单独创造一个subclass FontInfo? Java不是已经有自带的class Font吗?
+
+class Font只能获取它的属性, 而不能单独设置其中的一个属性(例如 `myFont.setName("Serif")` 这种方法是没有的). 而且大多数时候Font都被用做Anonymous class, 例如 `myComponent.setFont(new Font("Serif", Font.BOLD, 12))`. 为此我们只能在TextPanel.java中创建一个类似struct的数据结构来存储这些Font相关的信息.
+
+
+
+#### TextPanel.java 中的button怎么fire event, 让drawCanvas.java中的listener也能接收到?
+
+##### [How to propogate Swing events from a inner component to a container?](https://stackoverflow.com/questions/2191060/how-to-propogate-swing-events-from-a-inner-component-to-a-container)
+
+
+
+#### 理解listener
 
 
 
@@ -106,6 +138,14 @@ Listener()
 #### [color chooser](https://docs.oracle.com/javase/tutorial/uiswing/components/colorchooser.html)
 
 #### [How to display a color selector when clicking a button?](https://stackoverflow.com/questions/26565166/how-to-display-a-color-selector-when-clicking-a-button)
+
+#### [Draw text with graphics object on JFrame](https://stackoverflow.com/questions/8802320/draw-text-with-graphics-object-on-jframe)
+
+#### [Set text size of JComboBox in Swing](https://stackoverflow.com/questions/18704022/set-text-size-of-jcombobox-in-swing)
+
+#### [When to use static methods](https://stackoverflow.com/questions/2671496/when-to-use-static-methods)
+
+#### [How to Change Font Size in drawString Java](https://stackoverflow.com/questions/18249592/how-to-change-font-size-in-drawstring-java)
 
 每个component都有对应的类(一般来说只有一个, 例如 `BtnCountListener`), 这个类实现了interface ActionListener, 并且override方法`actionPerformed(ActionEvent evt)`
 

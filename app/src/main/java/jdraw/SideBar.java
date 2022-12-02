@@ -4,8 +4,6 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.w3c.dom.events.Event;
-
 import java.awt.*;
 import java.awt.event.*;
 
@@ -24,7 +22,7 @@ public class SideBar extends JPanel {
     private JButton lineButton = new JButton("Line");
     private JButton pencilButton = new JButton("Pencil");
 
-    private JButton select = new JButton("Select");
+    private JButton selectButton = new JButton("Select");
     private JButton undoButton = new JButton("Undo");
     private JButton redoButton = new JButton("Redo");
     private JButton saveButton = new JButton("Save");
@@ -32,8 +30,7 @@ public class SideBar extends JPanel {
     List<JButton> ShapeSelectButtonList = new ArrayList<>();
 
     // textPanel
-    private JPanel textPanel = new TextPanel();
-    
+    TextPanel textPanel = new TextPanel();
 
     // colorChooser Button
     private static final Color SHAPE_DEFAULT_COLOR = Color.BLACK;
@@ -67,6 +64,8 @@ public class SideBar extends JPanel {
         }
         // add textPanel
         add(textPanel);
+        JButton TextButton = textPanel.getTextButton();
+        TextButton.addActionListener(shapeSelectBtnListener);
 
         // add listener/dialog pop for colorChooserButton
         add(colorChooserButton);
@@ -102,13 +101,12 @@ public class SideBar extends JPanel {
                 JSlider source = (JSlider) evt.getSource();
                 if (!source.getValueIsAdjusting()) {
                     int stroke = source.getValue();
-                    shapeStroke = new BasicStroke((float)stroke);
+                    shapeStroke = new BasicStroke((float) stroke);
                 }
             }
         });
 
     }
-
 
     static String getNextShapeType() {
         return shapeType;
@@ -121,6 +119,12 @@ public class SideBar extends JPanel {
     static Stroke getNextShapeStroke() {
         return shapeStroke;
     }
+
+    /*
+     * Controller, listen to event when mouse-click happens
+     * 
+     */
+
 
     private class ShapeSelectListener implements ActionListener {
         @Override

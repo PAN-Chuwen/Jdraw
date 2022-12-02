@@ -2,6 +2,8 @@ package jdraw;
 
 import java.awt.*;
 import javax.swing.*;
+import javax.swing.text.AttributeSet.FontAttribute;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +48,7 @@ abstract class Geometric extends Shape {
         // support Geometric drawing in all directions, not only from top-left to
         // bottom-right.
         topLeftPoint = new Point(x, y);
-        
+
     }
 
     @Override
@@ -74,7 +76,7 @@ class Rectangle extends Geometric {
 }
 
 class Oval extends Geometric {
-    
+
     public Oval(int x, int y) {
         super(x, y);
     }
@@ -86,7 +88,7 @@ class Oval extends Geometric {
 }
 
 class Line extends Geometric {
-    
+
     public Line(int x, int y) {
         super(x, y);
     }
@@ -95,7 +97,7 @@ class Line extends Geometric {
     void draw(Graphics g) {
         g.drawLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
     }
-    
+
 }
 
 /*
@@ -122,6 +124,35 @@ class Pencil extends Shape {
     @Override
     void setPoint(int x, int y) {
         pointList.add(new Point(x, y));
+    }
+}
+
+class Text extends Shape {
+    private String textContent;
+    private Font font;
+    private Point textStartPoint = new Point(0, 0);
+
+    public Text(String s) {
+        textContent = s;
+    }
+
+    public void setFont(TextPanel.FontInfo fontInfo) {
+        font = new Font(fontInfo.fontName, fontInfo.fontStyle, fontInfo.fontSize);
+    }
+
+    @Override
+    void setPoint(int x, int y) {
+        textStartPoint.x = x;
+        textStartPoint.y = y;
+    }
+
+    @Override
+    void draw(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        // g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+        // RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setFont(font);
+        g2d.drawString(textContent, textStartPoint.x, textStartPoint.y);
     }
 }
 

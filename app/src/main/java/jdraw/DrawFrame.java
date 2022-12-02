@@ -5,15 +5,15 @@ import javax.swing.*;
 
 public class DrawFrame extends JFrame {
     private DrawCanvas canvas;
-    private SideBar sidebar;
+    private SideBar sideBar;
 
     public DrawFrame() {
         canvas = new DrawCanvas();
-        sidebar = new SideBar();
+        sideBar = new SideBar();
         Container cp = getContentPane();
         cp.setLayout(new BorderLayout());
         cp.add(canvas, BorderLayout.CENTER);
-        cp.add(sidebar, BorderLayout.WEST);
+        cp.add(sideBar, BorderLayout.WEST);
 
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

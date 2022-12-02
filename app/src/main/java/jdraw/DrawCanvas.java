@@ -44,7 +44,11 @@ public class DrawCanvas extends JPanel {
                 } else if (curShapeType.equals("Pencil")) {
                     curShape = new Pencil();
                 } else if (curShapeType.equals("Text")) {
-                    curShape = new Text();
+                    String inputText = TextPanel.getTextInput();
+                    curShape = new Text(inputText);
+                    // do Text-specific jobs
+                    Text curText = (Text) curShape;
+                    curText.setFont(TextPanel.getFontInfo());
                 } else {
                     curShape = new Rectangle(x, y);
                 }
