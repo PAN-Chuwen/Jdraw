@@ -1,3 +1,105 @@
+# how code works(s-ch)
+
+Please check git log to better understand how code works
+
+[toc]
+
+
+
+### MVC
+
+<img src="./.assets/how-code-works/MVC.png" alt="MVC" style="zoom:50%;" /> 
+
+> MVC model of Jdraw
+
+
+
+### View
+
+这里的view仅指在画布上**动态**呈现的图形, 所有画动态图形操作全是在`DrawCanvas.java`中完成的, 更准确的说, 是在一个方法`paintComponent(Graphics g)`中完成的, 在该方法中我们遍历了所有画布上的图形对象(存储在shapeStack中), 并调用了每个对象的`shape.draw()`方法. 具体每个图形执行 `shape.draw()`画出具体的图形(例如矩形, 椭圆, 文字等等)
+
+```java
+    // drawCanvas.java
+		...
+		@Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D g2d = (Graphics2D) g;
+        for (Shape shape : shapeStack) {
+            g2d.setColor(shape.getColor());
+            g2d.setStroke(shape.getStroke());
+            shape.draw(g);
+        }
+		....
+```
+
+#### 谁调用了 `paintComponent()` ?
+
+我们不需要(也不能)直接在代码里调用这个方法. 只有2种情况该方法被调用:
+
+1. 包含该方法的JComponent被创建(DrawCanvas)
+2. 在其他地方用`repaint()` 间接调用, `repaint()` 方法全部放在`Controller`中, 后续会介绍
+
+
+
+
+
+关于Swing画图的机制, 可以查看这两篇文章:
+
+ [A Closer Look at the Paint Mechanism](https://docs.oracle.com/javase/tutorial/uiswing/painting/closer.html)
+
+[Who calls paintComponent](http://www.fredosaurus.com/notes-java/GUI-lowlevel/graphics/15who-calls-paintcomponent.html)
+
+
+
+### Model
+
+我们在`DrawCanvas.java`中存放了所有图形的具体对象, 但类和方法的定义全部放在`Shape.java`中. 每一个类都通过继承或Override拥有`void draw(Graphics g)` 这个方法, 例如对于Oval来说, 其中调用了Graphics的方法
+
+```java
+...
+  	// class Rectangle
+		@Override
+    void draw(Graphics g) {
+        g.drawOval(topLeftPoint.x, topLeftPoint.y, width, height);
+    }
+...
+```
+
+<img src="./.assets/how-code-works/classGraph.png" alt="classGraph" style="zoom:50%;" />  
+
+>  class hierachy in Shape.java
+
+
+
+### Controller
+
+controller是整个画图软件最为核心, 也是最难理解的部分. 理论上所有Controller的代码都应该放在一个代码文件中, 但由于还有部分功能没有实现, Controller的代码分为两部分, 一部分存放在`drawCanvas.java`中, 另一部分放在`SideBar.java`中.
+
+#### Listener
+
+Controller的核心就是Listener. 理解listener最好的方法就是通过例子模拟.
+
+##### 用户怎么向Controller传输信号(例如鼠标点击/移动)
+
+用户在按钮1上点击鼠标, 此时如果按钮1上有listener(假设叫`button1Listener`), 那么程序会立即执行`button1Listener`中的方法`mousePressed()`, 这样就实现了特定事件信号的传输.
+
+需要注意的是一个Listener可以监听多个对象(例如Button1, Button2, ....)
+
+##### Controller怎么改变Model中的数据
+
+直接在mousePress()中更改数据即可, 不同的事件对应不同的方法.
+
+##### 最终怎么重画?
+
+通过`repaint()`. `repaint()`可以理解为立即执行`drawCanvas.java`中的`paintComponent()`. 
+
+
+
+
+
+### FAQ
+
 #### 在哪里调用`g.drawLine(...)`这样的方法画画?
 
 `DrawCanvas.java `中的`paintComponent()`负责画出所有图形, 其他所有地方都只应该调用`repaint()`, 让`repaint()`去调用`paintComponent()`
@@ -24,7 +126,7 @@
 
 
 
-`paintComponent()`中怎么实现每个shape画出对应的形状?
+#### `paintComponent()`中怎么实现每个shape画出对应的形状?
 
 直接调用`shape.draw()` 即可, 因为我们是用interface操作的, 每个图形都overrider了这个方法.
 
@@ -36,13 +138,78 @@
 
 
 
-如何实现undo/redo功能?
+#### 如何实现undo/redo功能?
+
+使用两个栈, 图形栈(`shapeStack`)存放显示的shape, 垃圾栈(`trashBin`) 存放不要的图形. 当undo时把图形栈顶端的shape压入垃圾栈, redo则反过来做.
+
+
+
+#### 为什么要在TextPanel.java中单独创造一个subclass FontInfo? Java不是已经有自带的class Font吗?
+
+class Font只能获取它的属性, 而不能单独设置其中的一个属性(例如 `myFont.setName("Serif")` 这种方法是没有的). 而且大多数时候Font都被用做Anonymous class, 例如 `myComponent.setFont(new Font("Serif", Font.BOLD, 12))`. 为此我们只能在TextPanel.java中创建一个类似struct的数据结构来存储这些Font相关的信息.
 
 
 
 
 
-### 功能
+#### TextPanel相关
+
+怎么改变Text内容? JTextField
+
+字体大小/字体?  使用JComboBox
+
+
+
+
+
+#### 点击TextPanel.java 中的按钮, 怎么改变drawCanvas.java 中的对应属性?
+
+[How to propogate Swing events from a inner component to a container?](https://stackoverflow.com/questions/2191060/how-to-propogate-swing-events-from-a-inner-component-to-a-container)
+
+有3种思路,
+
+思路1: 在TextPanel (inner component) 中自己fire一个event 
+
+思路2 :在drawCanvas (顶层) 中获取TextPanel.getTextButton(), 并为其设置listener. 
+
+思路3: 在含有Component那层中递归向上找对应的Container
+
+我们采用了思路3, 因为这样代码的可读性更好, 原则是: 需要在哪里改数据, 就在哪个文件添加Listener, 不管添加listener的component在哪个文件中
+
+例子
+
+```java
+		//drawCanvas.java
+		...
+				DrawFrame drawFrame = (DrawFrame) SwingUtilities.getWindowAncestor(this);
+        JButton redoButton = drawFrame.sideBar.redoButton;
+        JButton undoButton = drawFrame.sideBar.undoButton;
+    ...
+```
+
+
+
+
+
+#### 改变 textField 时画出来的Text就不同, 不用再点击Text按钮
+
+使用`DocumentListener()`, 看这篇文章:[Value Change Listener to JTextField](https://stackoverflow.com/questions/3953208/value-change-listener-to-jtextfield)
+
+#### 选择状态(点击了选择按钮后), 在canvas中拖动鼠标能移动图形(如果有多个图形重叠选最新画的)
+
+遍历栈, 退出循环后就是栈最上面的那个shape(如果没有则返回null)
+
+#### color stroke 怎么改变上一个选择图形(如果有的话) 的属性?
+
+todo
+
+
+
+
+
+
+
+### todo
 
 - [x] 画出各种图形
 - [x] 添加 `Sidebar`(先用Text描述即可, 后续替换成Icon)
@@ -62,185 +229,32 @@
 
 
 
+### Reference
 
+[Java GUI: about getContentPane( ) method and content](https://stackoverflow.com/questions/16744152/java-gui-about-getcontentpane-method-and-content)
 
+[How do you format code in Visual Studio Code (VSCode)?](https://stackoverflow.com/questions/29973357/how-do-you-format-code-in-visual-studio-code-vscode)
 
+[repaint() method in JFrame or Jpanel?](https://stackoverflow.com/questions/36368485/repaint-method-in-jframe-or-jpanel)
 
-#### drawString
+[What does super.paintComponent(g) do?](https://stackoverflow.com/questions/28724609/what-does-super-paintcomponentg-do)
 
-怎么改变string(text)内容?
+[who calls paintComponent()](http://www.fredosaurus.com/notes-java/GUI-lowlevel/graphics/15who-calls-paintcomponent.html)
 
-字体大小?
+[How to get the name of a class without the package?](https://stackoverflow.com/questions/2690333/how-to-get-the-name-of-a-class-without-the-package)
 
-apply cancel
+[Java swing draw rectangle in mouse drag and drop](https://stackoverflow.com/questions/40945461/java-swing-draw-rectangle-in-mouse-drag-and-drop)
 
+[color chooser](https://docs.oracle.com/javase/tutorial/uiswing/components/colorchooser.html)
 
+[How to display a color selector when clicking a button?](https://stackoverflow.com/questions/26565166/how-to-display-a-color-selector-when-clicking-a-button)
 
+[Draw text with graphics object on JFrame](https://stackoverflow.com/questions/8802320/draw-text-with-graphics-object-on-jframe)
 
+[Set text size of JComboBox in Swing](https://stackoverflow.com/questions/18704022/set-text-size-of-jcombobox-in-swing)
 
+[When to use static methods](https://stackoverflow.com/questions/2671496/when-to-use-static-methods)
 
+[How to Change Font Size in drawString Java](https://stackoverflow.com/questions/18249592/how-to-change-font-size-in-drawstring-java)
 
-SideBar.java 和 drawCanvas.java 中包括了Controller(主要通过listener实现)的代码
 
-#### SideBar中改变颜色/粗细怎么传递到Canvas中?
-
-
-
-#### SideBar -> TextPanel 怎么将Text相关属性传递到Canvas中?
-
-要么在drawFrame.java中进行操作(因为drawCanvas.java 是看不见drawFrame.java的, 也不能对其中的成员变量进行操作)
-
-要么在TextPanel.java中把需要传出去的成员设置成static, 这样就可以在drawFrame中直接调用了
-
-
-
-#### 为什么要在TextPanel.java中单独创造一个subclass FontInfo? Java不是已经有自带的class Font吗?
-
-class Font只能获取它的属性, 而不能单独设置其中的一个属性(例如 `myFont.setName("Serif")` 这种方法是没有的). 而且大多数时候Font都被用做Anonymous class, 例如 `myComponent.setFont(new Font("Serif", Font.BOLD, 12))`. 为此我们只能在TextPanel.java中创建一个类似struct的数据结构来存储这些Font相关的信息.
-
-
-
-#### TextPanel.java 中的button怎么fire event, 让drawCanvas.java中的listener也能接收到?
-
-##### [How to propogate Swing events from a inner component to a container?](https://stackoverflow.com/questions/2191060/how-to-propogate-swing-events-from-a-inner-component-to-a-container)
-
-有3种思路,
-
-思路1: 在TextPanel (inner component) 中自己fire一个event 
-
-思路2 :在drawCanvas (顶层) 中获取TextPanel.getTextButton(), 并为其设置listener. 
-
-思路3: 在含有Component那层中递归向上找对应的Container
-
-
-
-
-
-#### 改变 textField 时画出来的Text就不同, 不用再点击Text按钮
-
-##### [Value Change Listener to JTextField](https://stackoverflow.com/questions/3953208/value-change-listener-to-jtextfield)
-
-
-
-#### 需要在哪里改数据, 就在哪个文件添加Listener, 不管添加listener的component在哪个文件中
-
-Find.java
-
-##### [How to get the top level container of a JComponent?](https://stackoverflow.com/questions/2660943/how-to-get-the-top-level-container-of-a-jcomponent)
-
-##### [Test if object is instanceof a parameter type](https://stackoverflow.com/questions/5734720/test-if-object-is-instanceof-a-parameter-type)
-
-##### [How to pass a type as a method parameter in Java](https://stackoverflow.com/questions/2240646/how-to-pass-a-type-as-a-method-parameter-in-java)
-
-
-
-选择状态(点击了选择按钮后), 在canvas中拖动鼠标能移动图形(如果有多个图形重叠选最新画的)
-
-color stroke 能改变上一个选择图形(如果有的话) 的属性
-
-
-
-
-
-
-
-
-
-#### 第一步
-
-画线 + 清除
-
-能够 gradle run
-
-
-
-graphics
-
-几个自己执行, 不需要在代码里调用的方法
-
-paint()
-
-repaint()
-
-Listener()
-
-
-
-#### [Java GUI: about getContentPane( ) method and content](https://stackoverflow.com/questions/16744152/java-gui-about-getcontentpane-method-and-content)
-
-#### [How do you format code in Visual Studio Code (VSCode)?](https://stackoverflow.com/questions/29973357/how-do-you-format-code-in-visual-studio-code-vscode)
-
-#### [repaint() method in JFrame or Jpanel?](https://stackoverflow.com/questions/36368485/repaint-method-in-jframe-or-jpanel)
-
-#### [What does super.paintComponent(g) do?](https://stackoverflow.com/questions/28724609/what-does-super-paintcomponentg-do)
-
-#### [who calls paintComponent()](http://www.fredosaurus.com/notes-java/GUI-lowlevel/graphics/15who-calls-paintcomponent.html)
-
-#### [How to get the name of a class without the package?](https://stackoverflow.com/questions/2690333/how-to-get-the-name-of-a-class-without-the-package)
-
-#### [Java swing draw rectangle in mouse drag and drop](https://stackoverflow.com/questions/40945461/java-swing-draw-rectangle-in-mouse-drag-and-drop)
-
-#### [color chooser](https://docs.oracle.com/javase/tutorial/uiswing/components/colorchooser.html)
-
-#### [How to display a color selector when clicking a button?](https://stackoverflow.com/questions/26565166/how-to-display-a-color-selector-when-clicking-a-button)
-
-#### [Draw text with graphics object on JFrame](https://stackoverflow.com/questions/8802320/draw-text-with-graphics-object-on-jframe)
-
-#### [Set text size of JComboBox in Swing](https://stackoverflow.com/questions/18704022/set-text-size-of-jcombobox-in-swing)
-
-#### [When to use static methods](https://stackoverflow.com/questions/2671496/when-to-use-static-methods)
-
-#### [How to Change Font Size in drawString Java](https://stackoverflow.com/questions/18249592/how-to-change-font-size-in-drawstring-java)
-
-每个component都有对应的类(一般来说只有一个, 例如 `BtnCountListener`), 这个类实现了interface ActionListener, 并且override方法`actionPerformed(ActionEvent evt)`
-
-
-
-然后在构造函数里需要创建这个类, 并且绑定
-
-```java
-BtnCountListener listener1 = new BtnCountListener();
-btnCount.addActionListener(listener1);
-```
-
-
-
-
-
-
-
-绑定完后, 点按钮时相当于执行了以下代码
-
-```java
-ActionEvent evt = new ActionEvent( ...... );
-listener1.actionPerformed(evt);   // for all its listener(s)
-```
-
-
-
-最关键的是中间有一个`ActionEvent`类, 这个类代码中只在listener的方法中作为参数出现, 但是在点击按钮时会执行代码来创建`ActionEvent` 对象
-
-
-
-
-
-```tex
-用Java的awt和swing做一个简单的绘图工具，以CAD的方式操作，能放置直线、矩形、圆和文字，能选中图形，修改参数，如颜色等，能拖动图形和调整大小，可以保存和恢复。功能请参考视频演示。
-
-要求上传：
-
-源码；
-实验报告；
-可执行的jar文件。
-实验报告中须注明使用的Java版本、在Linux平台上编译源码及运行的命令。
-```
-
-
-
-
-
-
-
-![Java Swing Class Hierarchy Diagram](./.assets/GUI/java-swing-class-hierarchy.jpg) 
-
-![Swing_ClassDiagram.png](./.assets/GUI/Swing_ClassDiagram.png) 

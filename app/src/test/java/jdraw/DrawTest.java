@@ -3,7 +3,11 @@
  */
 package jdraw;
 
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 class DrawTest {
-    
+    @Test void appHasAGreeting() {
+        assertTrue(true);
+    }
 }

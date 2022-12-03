@@ -29,6 +29,12 @@ application {
     mainClass = 'jdraw.Draw'
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'jdraw.Draw'
+    }
+}
+
 tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
