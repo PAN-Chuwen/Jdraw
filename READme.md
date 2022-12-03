@@ -7,7 +7,7 @@
 ### how to run this project:
 
 ```sh
-$ cd Jdraw
+$ cd JDraw
 $ gradle run
 ```
 

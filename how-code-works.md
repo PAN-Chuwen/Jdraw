@@ -2,7 +2,6 @@
 
 Please check git log to better understand how code works
 
-[toc]
 
 
 
